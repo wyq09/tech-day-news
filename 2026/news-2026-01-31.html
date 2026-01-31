@@ -11,73 +11,183 @@
             box-sizing: border-box;
         }
 
+        @font-face {
+            font-family: 'Matrix';
+            src: local('Courier New');
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
             min-height: 100vh;
             padding: 20px;
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Matrix rain effect background */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.05;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
-            background: white;
-            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #0f0;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 20px rgba(0, 255, 0, 0.1);
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #0f0, transparent, #0f0);
+            z-index: -1;
+            animation: borderGlow 2s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .header h1 {
             font-size: 2.5em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #0f0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+            animation: flicker 3s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .header .date {
-            color: #666;
+            color: #0f0;
             font-size: 1.2em;
             margin-bottom: 20px;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .header .date::before {
+            content: '[ ';
+        }
+        .header .date::after {
+            content: ' ]';
         }
 
         .summary {
-            background: #f8f9fa;
+            background: rgba(0, 255, 0, 0.05);
+            border-left: 3px solid #0f0;
             padding: 20px;
-            border-left: 4px solid #667eea;
-            border-radius: 4px;
             font-size: 1.1em;
-            color: #333;
+            color: #0f0;
+            text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+            position: relative;
+        }
+
+        .summary::before {
+            content: '>';
+            color: #0f0;
+            margin-right: 10px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
         }
 
         .category {
-            background: white;
-            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid #0f0;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .category::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            border-top: 2px solid #0f0;
+            border-right: 2px solid #0f0;
+        }
+
+        .category::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-bottom: 2px solid #0f0;
+            border-left: 2px solid #0f0;
         }
 
         .category-title {
             font-size: 1.8em;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 3px solid;
+            border-bottom: 1px solid #0f0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #0f0;
+            position: relative;
         }
 
-        .hot .category-title { border-color: #e74c3c; color: #e74c3c; }
-        .tech .category-title { border-color: #3498db; color: #3498db; }
-        .product .category-title { border-color: #9b59b6; color: #9b59b6; }
-        .recommend .category-title { border-color: #2ecc71; color: #2ecc71; }
+        .category-title::before {
+            content: '## ';
+            color: #0f0;
+        }
 
         .article-item {
             padding: 20px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px dashed rgba(0, 255, 0, 0.3);
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .article-item::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #0f0;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-10px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .article-item:last-child {
@@ -85,94 +195,145 @@
         }
 
         .article-title {
-            font-size: 1.3em;
+            font-size: 1.2em;
             margin-bottom: 10px;
         }
 
         .article-title a {
-            color: #333;
+            color: #0f0;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
         }
 
         .article-title a:hover {
-            color: #667eea;
+            color: #fff;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 2px 5px;
         }
 
         .article-meta {
             display: flex;
             gap: 15px;
-            color: #999;
-            font-size: 0.9em;
+            color: #0a0;
+            font-size: 0.85em;
             margin-bottom: 10px;
         }
 
         .source {
-            background: #f0f0f0;
+            background: rgba(0, 255, 0, 0.1);
             padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.85em;
+            font-size: 0.8em;
+            border: 1px solid #0a0;
         }
 
         .article-summary {
-            color: #666;
-            line-height: 1.8;
+            color: #0d0;
+            font-size: 0.95em;
+            line-height: 1.7;
         }
 
         .ai-tag {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #0f0;
+            color: #000;
             padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
+            font-size: 0.75em;
             margin-left: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px #0f0;
         }
 
         .footer {
             text-align: center;
-            color: white;
+            color: #0a0;
             padding: 20px;
             margin-top: 40px;
+            font-size: 0.9em;
         }
 
         .back-link {
             display: inline-block;
             margin-bottom: 20px;
-            color: white;
+            color: #0f0;
             text-decoration: none;
             padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            transition: background 0.3s;
+            border: 1px solid #0f0;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .back-link:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        .back-link::before {
+            content: '◀ ';
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0d0;
+            box-shadow: 0 0 10px #0f0;
         }
 
         @media (max-width: 768px) {
             body { padding: 10px; }
             .header, .category { padding: 20px; }
             .header h1 { font-size: 1.8em; }
+            .article-title { font-size: 1.1em; }
         }
     </style>
 </head>
 <body>
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+
     <div class="container">
-        <a href="../index.html" class="back-link">← 返回归档</a>
+        <a href="../index.html" class="back-link">返回矩阵索引</a>
 
         <div class="header">
             <h1>科技日报</h1>
             <div class="date">2026-01-31</div>
-            <div class="summary">今天是 2026年01月31日 周六，我们为您精选了 10 条科技资讯。 今日重点关注：中国车企和特斯拉的下一战, 战场已定, 万科。 AI领域有 5 条动态值得关注。</div>
+            <div class="summary">系统已同步 2026年01月31日 周六 的矩阵数据流。 今日检测到 29 个科技节点更新，其中 9 个涉及AI核心矩阵。 热点信号注入：虎嗅, 模型, 限牌十年, 为何最终限了个寂寞, 中国车企和特斯拉的下一战, 战场已定。 矩阵正在持续优化，建议保持连接稳定。</div>
         </div>
 
         
         
         <div class="category hot">
-            <div class="category-title">今日热点</div>
+            <div class="category-title">系统警报 - 今日热点</div>
 
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="http://www.huxiu.com/article/4830403.html?f=wangzhan" target="_blank" rel="noopener">
+                        限牌十年，为何最终限了个寂寞？
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[虎嗅]</span>
+                </div>
+                <div class="article-summary">
+<p>杭州车牌曾经4万一块，如今只值1000元，跌幅高达98%，比股市、楼市还惨。这期视频就来聊聊，限牌为什么最后都限了个寂寞？</p><p><a href="http://huxiu.link/ulxE"><strong>下载虎嗅APP<...</div>
+            </div>
             
             <div class="article-item">
                 <div class="article-title">
@@ -182,9 +343,9 @@
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">虎嗅</span>
+                    <span class="source">[虎嗅]</span>
                 </div>
-                <div class="article-summary"><img src="https://img.huxiucdn.com/article/cover/202601/30/145910658250.jpg" />
+                <div class="article-summary">
 <p><span class="text-remarks" label="备注">出品|虎嗅汽车组</span></p><p><span class="text-remarks" label="备注">作者|王亚骏<br /></span>...</div>
             </div>
             
@@ -196,9 +357,9 @@
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">虎嗅</span>
+                    <span class="source">[虎嗅]</span>
                 </div>
-                <div class="article-summary"><img src="https://img.huxiucdn.com/article/cover/202601/30/094430838119.png" />
+                <div class="article-summary">
 <p>喜大普奔！万科终于开始还钱了，这段时间万科还活着吗？郁亮是真退休还是被带走了？万科是不是要爆雷了？万科的房子还能不能买？这些问题在评论区反复出现，而这些问题在今天都有了阶段性的答案，我将用三期视频将这些坑全部填上。</p><p><a ...</div>
             </div>
             
@@ -210,9 +371,9 @@
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">虎嗅</span>
+                    <span class="source">[虎嗅]</span>
                 </div>
-                <div class="article-summary"><img src="https://img.huxiucdn.com/article/cover/202601/30/185717519548.jpg" />
+                <div class="article-summary">
 <p class="text-remarks" label="备注">题图来自：视觉中国</p><p><br /></p><p>在公众视野消失多年的邵氏兄弟，最近登上了热搜。</p><p><br /></p><p>近日，香港邵氏兄弟控股<s...</div>
             </div>
             
@@ -224,9 +385,9 @@
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">虎嗅</span>
+                    <span class="source">[虎嗅]</span>
                 </div>
-                <div class="article-summary"><img src="https://img.huxiucdn.com/article/cover/202601/30/152623588259.jpeg" />
+                <div class="article-summary">
 <p>在中国，信用破产会让你陷入“斩杀线”吗？不不不，我们有自己的一套信用监督机制。而前段时间关于“信用修复”的新闻让枪仔我灵机一动，这期和大家聊聊，对于老赖、个人信用和相关惩戒措施在我们国家是如何运转的。</p><p><a href="...</div>
             </div>
             
@@ -238,85 +399,328 @@
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">虎嗅</span>
+                    <span class="source">[虎嗅]</span>
                 </div>
-                <div class="article-summary"><img src="https://img.huxiucdn.com/article/cover/202601/30/150312175994.jpg" />
+                <div class="article-summary">
 <p>最近看到了几个周频的量化选股策略，年化收益都在15%以上，最高的能有28.5%，最大回撤也不是很大，最小的才12.3%，这些策略都来源于战绩可查的实战派大师，看上去条理清晰、逻辑严密，并且还附带了历史回测结果。不管你心动了没有，反正我...</div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="http://www.huxiu.com/article/4831081.html?f=wangzhan" target="_blank" rel="noopener">
+                        金银价格大跳水，有色金属变成绿色金属，接下来还能买吗？
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[虎嗅]</span>
+                </div>
+                <div class="article-summary">
+<p>金银刚创历史新高就来了高台跳水，有色金属也都变成了绿色。金银铜铝油气米，这条涨价链条正在一步步上演，黄金避险，白银跟涨，第三棒铜接力，资本开始切换阵地。</p><p><a href="http://huxiu.link/ulxE"><...</div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="http://www.huxiu.com/article/4830904.html?f=wangzhan" target="_blank" rel="noopener">
+                        沃尔玛也学甄嬛了？
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[虎嗅]</span>
+                </div>
+                <div class="article-summary">
+<p>沃尔玛现在也学甄嬛玩权谋了？山姆（沈眉庄）刚刚有点儿风吹草动，沃尔玛赶紧扶持了沃集鲜（安陵容）。</p><p><a href="http://huxiu.link/ulxE"><strong>下载虎嗅APP</strong></a>，...</div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="http://www.huxiu.com/article/4830702.html?f=wangzhan" target="_blank" rel="noopener">
+                        索尼电视遭分拆，日本彩电巨头为何全军覆没？
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[虎嗅]</span>
+                </div>
+                <div class="article-summary">
+<p>TCL宣布与索尼合资，接管索尼全球家庭娱乐业务，未来新公司将由TCL控股，全面负责开发、制造和销售。曾经称霸高端市场、以画质闻名的索尼，如今也难逃行业巨变了吗？</p><p><a href="http://huxiu.link/ulx...</div>
             </div>
             
         </div>
         
         
         
-        
-        
-        <div class="category product">
-            <div class="category-title">产品观察</div>
+        <div class="category tech">
+            <div class="category-title">核心代码 - 技术趋势</div>
 
             
             <div class="article-item">
                 <div class="article-title">
-                    <a href="https://sspai.com/prime/story/a-guide-to-muscle-explosive-power" target="_blank" rel="noopener">
-                        别只练力量和心肺，人生下半场拼的是肌肉爆发力
-                        <span class="ai-tag">AI</span>
+                    <a href="https://www.infoq.cn/article/h2pqxbjh27gCsekUWKFT?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        硬杠 Meta NLLB！Google 发布 TranslateGemma，机器翻译的“性价比”被卷到了极致
+                        
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">少数派</span>
+                    <span class="source">[InfoQ]</span>
                 </div>
-                <div class="article-summary">今天这篇文章，就来聊聊，肌肉爆发力究竟是什么？它为何对长寿如此重要？以及普通人该如何科学训练爆发力？<a href="https://sspai.com/prime/story/a-guide-to-muscle-explosive-power" target="_blank">查看全文</a><p>本文为会员文章，出自<a href="https://sspai.com/prime/precog...</div>
+                <div class="article-summary">点击查看原文></div>
             </div>
             
             <div class="article-item">
                 <div class="article-title">
-                    <a href="https://sspai.com/post/105907" target="_blank" rel="noopener">
-                        本周看什么 | 最近值得一看的 8 部作品
-                        <span class="ai-tag">AI</span>
+                    <a href="https://www.infoq.cn/article/TflNBc7EvNHoKCyDEdj3?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        Swift跨平台框架Skip现已完全开源
+                        
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">少数派</span>
+                    <span class="source">[InfoQ]</span>
                 </div>
-                <div class="article-summary">📅本周新预告《攻壳机动队THEGHOSTINTHESHELL》首支预告1月30日，TV动画《攻壳机动队THEGHOSTINTHESHELL》发布了首支预告，定档7月开始播出。木村翔马执导，圆城塔编剧， ...<a href="https://sspai.com/post/105907" target="_blank">查看全文</a></div>
+                <div class="article-summary">点击查看原文></div>
             </div>
             
             <div class="article-item">
                 <div class="article-title">
-                    <a href="https://sspai.com/post/104564" target="_blank" rel="noopener">
-                        停更但好用的 DriveDroid：把 Android 手机变成 USB 启动盘
-                        <span class="ai-tag">AI</span>
+                    <a href="https://www.infoq.cn/article/ah0Xq4eGpFGrOEJOdfNX?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        摩擦解决之道：改变关键要素
+                        
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">少数派</span>
+                    <span class="source">[InfoQ]</span>
                 </div>
-                <div class="article-summary">编注：本文为少数派12月主题征稿活动中「可惜！那些好用但停更了的App」主题入选投稿之一，我们将在日后开展更多不同领域和话题的征稿活动，敬请留意。前言作为一个将ArchLinux作为主力系统使用多年的 ...<a href="https://sspai.com/post/104564" target="_blank">查看全文</a></div>
+                <div class="article-summary">点击查看原文></div>
             </div>
             
             <div class="article-item">
                 <div class="article-title">
-                    <a href="https://sspai.com/post/105677" target="_blank" rel="noopener">
-                        你真的是记性不好吗？关于记忆和遗忘的常见误区
-                        <span class="ai-tag">AI</span>
+                    <a href="https://www.infoq.cn/article/4BOafAxF30X1K8AQd8qM?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        从三大支柱出发：Snowflake 平台的一次系统级升级
+                        
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">少数派</span>
+                    <span class="source">[InfoQ]</span>
                 </div>
-                <div class="article-summary">虽然我们每天都把记忆、遗忘这些词挂在嘴边，但记忆实际上不是一种单一的能力，而遗忘也不是一件全然的坏事。<a href="https://sspai.com/post/105677" target="_blank">查看全文</a></div>
+                <div class="article-summary">点击查看原文></div>
             </div>
             
             <div class="article-item">
                 <div class="article-title">
-                    <a href="https://sspai.com/post/105895" target="_blank" rel="noopener">
-                        派早报：小米发布 REDMI Turbo 5 系列手机等
+                    <a href="https://www.infoq.cn/article/NC3jkcH9qgVjb8Q36sl2?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        劈柴哥和哈萨比斯亲自站台！谷歌世界模型Project Genie刷屏，幕后团队揭秘60秒不是极限，内存是巨大约束
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/JAmVx35sxdz0ubB7l0Ua?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        “天下苦CUDA久矣！”KernelCAT率先掀桌，实现国产芯片无痛适配
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/US8DFAjTKWuEUkRBEFSj?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        OCR竞争加剧！百度开源新一代SOTA OCR模型，性能超越DeepSeek-OCR2？
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/QRiKGWvWxwUh7wAwODjK?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        苹果 Siri 压力大了？Google 甩出 FunctionGemma 杀手锏，手机本地也能流畅调 API
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/Uo24zvaQqEsDyK752BYQ?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        就差两个字符！亚马逊云科技自家 GitHub 仓库险被攻破，供应链安全亮红灯
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/X7i8hMBrPd7hKvgkwKaC?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        DoorDash通过多臂老虎机增强A/B测试
+                        
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+        </div>
+        
+        
+        
+        <div class="category product">
+            <div class="category-title">矩阵程序 - AI产品观察</div>
+
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/V52Rsbxl71Ampa74ottq?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        BigQuery 新功能：SQL 直调 17 万 + AI 模型，3800 万行数据处理成本仅 2 美元
                         <span class="ai-tag">AI</span>
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">少数派</span>
+                    <span class="source">[InfoQ]</span>
                 </div>
-                <div class="article-summary">微信发布针对第三方违规行为的专项打击公告，MiniMax 稀宇科技发布 MiniMax Music 2.5 模型等。<a href="https://sspai.com/post/105895" target="_blank">查看全文</a></div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/9QaYwTAYLedFhScRPsOp?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        为什么你的系统一出事就“查不清”？Railway 给出可观测性的标准答案
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/lRtX3TRRZGq0dr6tl66q?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        如何用 dbt MCP 服务器和 Snowflake 构建智能体工作流
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/ZGQys2f6BuEpytzqNLUu?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        预算有限、技术空白：最刁钻的AI用户，是中小企业老板
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/0gUgQyIFDDrgJaXlESUg?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        效率狂飙数倍后：Coding Agent已然成熟，但开放世界仍是“无人区”
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/3x5oE24DW1X5eFYeMGTE?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        商汤开源SenseNova-MARS，突破多模态搜索推理天花板
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/XW07axk5vWGgzz4bFqol?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        凌晨三点写代码、10个 Agent 同时跑！ClawdBot 创始人自曝 AI 上瘾史：Claude Code 入坑，Codex 成主力
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/video/CDqEUTowOKzrfddKqqbK?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        如何破解大模型生产级部署「最后一公里难题」？
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.infoq.cn/article/48dPcqMKE6lcxtp9OLH6?utm_source=rss&utm_medium=article" target="_blank" rel="noopener">
+                        谷歌通用商务协议（UCP）赋能智能代理购物
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[InfoQ]</span>
+                </div>
+                <div class="article-summary">点击查看原文></div>
+            </div>
+            
+            <div class="article-item">
+                <div class="article-title">
+                    <a href="https://www.oschina.net/news/400765/google-deepmind-project-genie" target="_blank" rel="noopener">
+                        谷歌发布 Project Genie：基于文本生成可互动 3D 虚拟世界
+                        <span class="ai-tag">AI</span>
+                    </a>
+                </div>
+                <div class="article-meta">
+                    <span class="source">[开源中国]</span>
+                </div>
+                <div class="article-summary">谷歌DeepMind发布实验性AI工具Project Genie，用户通过自然语言描述就能即时创建并探索逼真的三维虚拟环境。 Project Genie基于Genie 3世界模型，支持实时生成动态世界，每秒渲染24帧，分辨率达1280x720。用户输入环境提示词和角色描述后，系统先生成草图预览，再转为可导航的完整场景。用户可在其中自由移动、调整视角和...</div>
             </div>
             
         </div>
@@ -326,8 +730,54 @@
         
 
         <div class="footer">
-            <p>本日报由 AI 自动整理，内容版权归原作者所有</p>
+            <p>>> 数据采集自各科技资讯源 | AI矩阵持续优化中</p>
+            <p>>> SYSTEM STATUS: ONLINE | MATRIX VERSION 2.0</p>
         </div>
     </div>
+
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+        const charArray = chars.split('');
+
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0f0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
 </body>
 </html>

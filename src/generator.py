@@ -21,6 +21,11 @@ class HTMLGenerator:
         # 生成导语
         summary = generate_summary(categorized, date)
 
+        # 清理文章摘要中的图片
+        for cat_id, articles in categorized.items():
+            for article in articles:
+                article.summary = self.clean_images(article.summary)
+
         # 确保输出目录存在
         output_dir = OUTPUT_DIR.format(year=year)
         os.makedirs(output_dir, exist_ok=True)
@@ -44,6 +49,18 @@ class HTMLGenerator:
 
         print(f"✓ 日报已生成: {filepath}")
         return filepath
+
+    def clean_images(self, text: str) -> str:
+        """清理文本中的图片标签"""
+        import re
+        # 移除所有HTML图片标签
+        text = re.sub(r'<img[^>]*>', '', text, flags=re.IGNORECASE)
+        # 移除Markdown格式的图片
+        text = re.sub(r'!\[.*?\]\(.*?\)', '', text, flags=re.IGNORECASE)
+        # 移除图片描述
+        text = re.sub(r'\[图片\]', '', text)
+        text = re.sub(r'图片[:：].*?(?:\n|$)', '', text)
+        return text.strip()
 
     def generate_archive(self, archive_data: list) -> str:
         """生成归档页面"""
@@ -114,6 +131,9 @@ class HTMLGenerator:
 
             summary_div = soup.find('div', class_='summary')
             if summary_div:
+                # 移除所有图片标签
+                for img in summary_div.find_all('img'):
+                    img.decompose()
                 return summary_div.get_text(strip=True)
 
         except Exception as e:

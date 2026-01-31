@@ -21,52 +21,60 @@ def main(date: datetime = None):
     if date is None:
         date = datetime.now()
 
-    print(f"\n{'='*60}")
-    print(f"开始生成科技日报 - {date.strftime('%Y-%m-%d')}")
-    print(f"{'='*60}\n")
+    try:
+        print(f"\n{'='*60}")
+        print(f"开始生成科技日报 - {date.strftime('%Y-%m-%d')}")
+        print(f"{'='*60}\n")
 
-    # 1. 抓取所有源
-    print("第一步：抓取资讯源...")
-    articles = []
+        # 1. 抓取所有源
+        print("第一步：抓取资讯源...")
+        articles = []
 
-    # RSS 源
-    rss_articles = fetch_rss_feeds()
-    articles.extend(rss_articles)
+        # RSS 源
+        rss_articles = fetch_rss_feeds()
+        articles.extend(rss_articles)
 
-    # Web 源
-    web_articles = fetch_web_sites()
-    articles.extend(web_articles)
+        # Web 源
+        web_articles = fetch_web_sites()
+        articles.extend(web_articles)
 
-    print(f"\n✓ 共抓取 {len(articles)} 条资讯\n")
+        print(f"\n✓ 共抓取 {len(articles)} 条资讯\n")
 
-    if not articles:
-        print("✗ 没有抓取到任何资讯")
+        if not articles:
+            print("✗ 没有抓取到任何资讯")
+            return False
+
+        # 2. 分类
+        print("第二步：分类整理...")
+        categorized = categorize_articles(articles)
+
+        for cat_id, arts in categorized.items():
+            print(f"  {cat_id}: {len(arts)} 条")
+
+        # 3. 生成日报
+        print("\n第三步：生成日报页面...")
+        generator = HTMLGenerator()
+        daily_path = generator.generate_daily(date, categorized)
+
+        # 4. 更新归档
+        print("\n第四步：更新归档页面...")
+        archive_data = generator.load_archive_data()
+        archive_path = generator.generate_archive(archive_data)
+
+        print(f"\n{'='*60}")
+        print(f"✓ 矩阵数据同步完成！")
+        print(f"  日报: {daily_path}")
+        print(f"  归档: {archive_path}")
+        print(f"{'='*60}\n")
+
+        return True
+
+    except Exception as e:
+        print(f"\n✗ 程序运行出错: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
-    # 2. 分类
-    print("第二步：分类整理...")
-    categorized = categorize_articles(articles)
-
-    for cat_id, arts in categorized.items():
-        print(f"  {cat_id}: {len(arts)} 条")
-
-    # 3. 生成日报
-    print("\n第三步：生成日报页面...")
-    generator = HTMLGenerator()
-    daily_path = generator.generate_daily(date, categorized)
-
-    # 4. 更新归档
-    print("\n第四步：更新归档页面...")
-    archive_data = generator.load_archive_data()
-    archive_path = generator.generate_archive(archive_data)
-
-    print(f"\n{'='*60}")
-    print(f"✓ 完成！")
-    print(f"  日报: {daily_path}")
-    print(f"  归档: {archive_path}")
-    print(f"{'='*60}\n")
-
-    return True
-
 if __name__ == '__main__':
-    main()
+    success = main()
+    sys.exit(0 if success else 1)

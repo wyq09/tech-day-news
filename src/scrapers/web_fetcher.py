@@ -45,13 +45,14 @@ def fetch_36kr(config: dict) -> List[Article]:
     """抓取 36氪"""
     articles = []
     url = "https://36kr.com/api/market/channel/nextpage"
+    count = config.get('count', 20)
 
     try:
         response = requests.get(url, headers=HEADERS, timeout=10)
         data = response.json()
 
         if data.get('data') and data['data'].get('item'):
-            for item in data['data']['item'][:15]:
+            for item in data['data']['item'][:count]:
                 if not item.get('widgetTitle') or not item.get('widgetUrl'):
                     continue
 
@@ -75,11 +76,12 @@ def fetch_36kr(config: dict) -> List[Article]:
 def fetch_36kr_html(config: dict) -> List[Article]:
     """备用：HTML 方式抓取 36氪"""
     articles = []
+    count = config.get('count', 20)
     response = requests.get(config['url'], headers=HEADERS, timeout=10)
     soup = BeautifulSoup(response.text, 'lxml')
 
     # 找文章标题链接
-    for item in soup.select('article.item')[:15]:
+    for item in soup.select('article.item')[:count]:
         title_tag = item.select_one('h2 a, a.article-title')
         if not title_tag:
             continue
@@ -98,11 +100,12 @@ def fetch_36kr_html(config: dict) -> List[Article]:
 def fetch_sspai(config: dict) -> List[Article]:
     """抓取少数派（使用 RSS）"""
     articles = []
+    count = config.get('count', 20)
     try:
         import feedparser
         feed = feedparser.parse("https://sspai.com/feed")
 
-        for entry in feed.entries[:15]:
+        for entry in feed.entries[:count]:
             summary = entry.get('summary', entry.get('description', ''))
 
             article = Article(
@@ -124,11 +127,12 @@ def fetch_sspai(config: dict) -> List[Article]:
 def fetch_huxiu(config: dict) -> List[Article]:
     """抓取虎嗅（使用 RSS）"""
     articles = []
+    count = config.get('count', 20)
     try:
         import feedparser
         feed = feedparser.parse("https://www.huxiu.com/rss/0.xml")
 
-        for entry in feed.entries[:15]:
+        for entry in feed.entries[:count]:
             summary = entry.get('summary', entry.get('description', ''))
 
             article = Article(
