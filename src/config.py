@@ -40,6 +40,18 @@ RSS_SOURCES = {
         "category": "tech",
         "count": 20
     },
+    "jianshu": {
+        "name": "简书",
+        "url": "https://www.jianshu.com/top/monthly/rss",
+        "category": "tech",
+        "count": 20
+    },
+    "csdn": {
+        "name": "CSDN",
+        "url": "https://blog.csdn.net/rss/new",
+        "category": "tech",
+        "count": 20
+    },
 }
 
 # 需要抓取的站点（RSS不可用时使用）
