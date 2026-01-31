@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技日报 - 归档</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+
+        :root {
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-pink: #ff006e;
+            --dark-bg: #0a0a0f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景线条 */
+        .bg-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-lines::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                linear-gradient(90deg, transparent 49%, rgba(0, 245, 255, 0.03) 50%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, rgba(191, 0, 255, 0.03) 50%, transparent 51%);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* 标题样式 */
+        .title-font {
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* 霓虹发光效果 */
+        .neon-glow {
+            text-shadow:
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan);
+        }
+
+        /* 归档卡片 */
+        .archive-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .archive-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple));
+        }
+
+        .archive-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 245, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 245, 255, 0.1);
+        }
+
+        .archive-card a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .archive-date {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .archive-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .archive-title:hover {
+            color: var(--neon-cyan);
+        }
+
+        .archive-intro {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        /* 年份分组 */
+        .year-group {
+            margin-bottom: 3rem;
+        }
+
+        .year-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--neon-purple);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(191, 0, 255, 0.5);
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景 -->
+    <div class="bg-lines"></div>
+
+    <!-- 主内容 -->
+    <div class="relative z-10 max-w-4xl mx-auto px-6 py-12">
+        <!-- 头部 -->
+        <header class="text-center mb-16">
+            <div class="inline-block mb-4">
+                <span class="title-font text-sm tracking-[0.3em] text-cyan-400">TECH DAILY NEWS</span>
+            </div>
+            <h1 class="title-font text-5xl md:text-7xl font-black mb-6 neon-glow">
+                归档
+            </h1>
+            <p class="text-gray-400">
+                共 {{ archives|length }} 期日报 · 更新于 {{ updated_at }}
+            </p>
+        </header>
+
+        <!-- 归档列表 -->
+        <main>
+            {% if archives %}
+                {% set current_year = '' %}
+                {% for archive in archives %}
+                    {% set year = archive.date[:4] %}
+                    {% if year != current_year %}
+                        {% if current_year != '' %}</div>{% endif %}
+                        {% set current_year = year %}
+                        <div class="year-group">
+                            <h2 class="year-title">{{ year }}</h2>
+                    {% endif %}
+
+                    <div class="archive-card">
+                        <a href="{{ archive.file }}">
+                            <div class="archive-date">{{ archive.date }}</div>
+                            <h3 class="archive-title">{{ archive.title }}</h3>
+                            <p class="archive-intro">{{ archive.intro }}</p>
+                        </a>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-gray-500 py-20">
+                    <p class="text-xl">暂无归档</p>
+                </div>
+            {% endif %}
+        </main>
+
+        <!-- 底部 -->
+        <footer class="mt-20 text-center">
+            <p class="text-gray-500 text-sm">
+                <a href="/" class="text-cyan-400 hover:text-cyan-300 transition">科技日报</a> · 每日更新
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

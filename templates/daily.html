@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技日报 {{ date }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+
+        :root {
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-pink: #ff006e;
+            --dark-bg: #0a0a0f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景线条 */
+        .bg-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-lines::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                linear-gradient(90deg, transparent 49%, rgba(0, 245, 255, 0.03) 50%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, rgba(191, 0, 255, 0.03) 50%, transparent 51%);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* 标题样式 */
+        .title-font {
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* 霓虹发光效果 */
+        .neon-glow {
+            text-shadow:
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan);
+        }
+
+        .neon-border {
+            border: 1px solid var(--neon-cyan);
+            box-shadow:
+                0 0 5px var(--neon-cyan),
+                inset 0 0 5px rgba(0, 245, 255, 0.1);
+        }
+
+        /* 类别标题 */
+        .category-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .category-title.hot { color: var(--neon-pink); }
+        .category-title.hot::before { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+
+        .category-title.tech { color: var(--neon-cyan); }
+        .category-title.tech::before { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+
+        .category-title.product { color: var(--neon-purple); }
+        .category-title.product::before { background: var(--neon-purple); box-shadow: 0 0 10px var(--neon-purple); }
+
+        .category-title.reading { color: #22c55e; }
+        .category-title.reading::before { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+
+        /* 新闻卡片 */
+        .news-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--neon-cyan), transparent);
+        }
+
+        .news-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 245, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .news-card a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .news-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .news-card h3:hover {
+            color: var(--neon-cyan);
+        }
+
+        .news-card .source {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .news-card .summary {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景 -->
+    <div class="bg-lines"></div>
+
+    <!-- 主内容 -->
+    <div class="relative z-10 max-w-6xl mx-auto px-6 py-12">
+        <!-- 头部 -->
+        <header class="text-center mb-16">
+            <div class="inline-block mb-4">
+                <span class="title-font text-sm tracking-[0.3em] text-cyan-400">TECH DAILY NEWS</span>
+            </div>
+            <h1 class="title-font text-5xl md:text-7xl font-black mb-6 neon-glow">
+                {{ date_display }}
+            </h1>
+            <div class="max-w-3xl mx-auto">
+                <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
+                    {{ intro }}
+                </p>
+            </div>
+        </header>
+
+        <!-- 内容区域 -->
+        <main class="grid md:grid-cols-2 gap-8 lg:gap-12">
+
+            <!-- 今日热点 -->
+            <section class="md:col-span-2">
+                <h2 class="category-title hot">今日热点</h2>
+                {% for item in hot %}
+                <div class="news-card">
+                    <a href="{{ item.url }}" target="_blank" rel="noopener">
+                        <h3>{{ item.title }}</h3>
+                    </a>
+                    <p class="source mb-2">{{ item.source }}</p>
+                    <p class="summary">{{ item.summary }}</p>
+                </div>
+                {% endfor %}
+            </section>
+
+            <!-- 技术趋势 -->
+            <section>
+                <h2 class="category-title tech">技术趋势</h2>
+                {% for item in tech %}
+                <div class="news-card">
+                    <a href="{{ item.url }}" target="_blank" rel="noopener">
+                        <h3>{{ item.title }}</h3>
+                    </a>
+                    <p class="source mb-2">{{ item.source }}</p>
+                    <p class="summary">{{ item.summary }}</p>
+                </div>
+                {% endfor %}
+            </section>
+
+            <!-- 产品观察 -->
+            <section>
+                <h2 class="category-title product">产品观察</h2>
+                {% for item in product %}
+                <div class="news-card">
+                    <a href="{{ item.url }}" target="_blank" rel="noopener">
+                        <h3>{{ item.title }}</h3>
+                    </a>
+                    <p class="source mb-2">{{ item.source }}</p>
+                    <p class="summary">{{ item.summary }}</p>
+                </div>
+                {% endfor %}
+            </section>
+
+            <!-- 推荐阅读 -->
+            <section class="md:col-span-2">
+                <h2 class="category-title reading">推荐阅读</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    {% for item in reading %}
+                    <div class="news-card">
+                        <a href="{{ item.url }}" target="_blank" rel="noopener">
+                            <h3>{{ item.title }}</h3>
+                        </a>
+                        <p class="source mb-2">{{ item.source }}</p>
+                        <p class="summary">{{ item.summary }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 底部 -->
+        <footer class="mt-20 text-center">
+            <p class="text-gray-500 text-sm">
+                由 <a href="/" class="text-cyan-400 hover:text-cyan-300 transition">科技日报</a> 自动生成
+            </p>
+            <p class="text-gray-600 text-xs mt-2">
+                数据来源：V2EX · Hacker News · 36氪 · 少数派 · 虎嗅 · InfoQ · 开源中国 · Solidot
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
