@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>科技日报 - {{ date }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,31 +12,62 @@
             box-sizing: border-box;
         }
 
-        @font-face {
-            font-family: 'Matrix';
-            src: local('Courier New');
-        }
-
         body {
-            font-family: 'Courier New', monospace;
-            background: #0a0a0a;
-            color: #1a1;
+            font-family: 'Space Grotesk', 'Arial Black', sans-serif;
+            background: #0a0015;
+            color: #fff;
             min-height: 100vh;
             padding: 20px;
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* Matrix rain effect background */
-        .matrix-bg {
+        /* Acid gradient background */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.03;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 0, 0.08) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0015 0%, #1a0025 50%, #0a0015 100%);
+            z-index: -2;
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Acid lines */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(255, 0, 255, 0.02) 50px,
+                    rgba(255, 0, 255, 0.02) 51px
+                );
+            z-index: -1;
+            animation: linesMove 20s linear infinite;
+        }
+
+        @keyframes linesMove {
+            from { transform: translateY(0); }
+            to { transform: translateY(51px); }
         }
 
         .container {
@@ -46,76 +78,77 @@
         }
 
         .header {
-            background: rgba(10, 20, 10, 0.95);
-            border: 1px solid #1a1;
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.2), rgba(0, 255, 255, 0.2));
+            border: 3px solid transparent;
+            border-image: linear-gradient(135deg, #ff0080, #00ffff, #ffff00, #ff0080) 1;
             border-radius: 0;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 0 15px rgba(26, 255, 26, 0.15), inset 0 0 15px rgba(26, 255, 26, 0.05);
+            padding: 50px;
+            margin-bottom: 40px;
             position: relative;
+            box-shadow:
+                0 0 30px rgba(255, 0, 128, 0.3),
+                inset 0 0 30px rgba(255, 0, 128, 0.1);
+            overflow: hidden;
         }
 
         .header::before {
-            content: '';
+            content: 'ACID TECH DAILY';
             position: absolute;
-            top: -1px;
-            left: -1px;
-            right: -1px;
-            bottom: -1px;
-            background: linear-gradient(45deg, #1a1, transparent, #1a1);
-            z-index: -1;
-            animation: borderGlow 3s linear infinite;
-        }
-
-        @keyframes borderGlow {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
+            top: -20px;
+            right: -20px;
+            font-size: 120px;
+            font-weight: 700;
+            color: rgba(255, 0, 128, 0.05);
+            transform: rotate(15deg);
+            pointer-events: none;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            color: #2a2;
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #ff0080, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 5px rgba(26, 255, 26, 0.5);
-            animation: flicker 4s infinite;
+            letter-spacing: 5px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
+            animation: titleGlow 3s ease infinite;
         }
 
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
         }
 
         .header .date {
-            color: #3a3;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 2px rgba(26, 255, 26, 0.3);
+            font-size: 1.3em;
+            color: #ffff00;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
         }
 
         .header .date::before {
-            content: '[ ';
-        }
-        .header .date::after {
-            content: ' ]';
+            content: '// ';
         }
 
         .summary {
-            background: rgba(26, 255, 26, 0.03);
-            border-left: 3px solid #2a2;
-            padding: 20px;
+            background: rgba(255, 0, 128, 0.1);
+            border-left: 4px solid #ff0080;
+            padding: 25px;
             font-size: 1.1em;
-            color: #3a3;
-            text-shadow: 0 0 2px rgba(26, 255, 26, 0.3);
+            color: #fff;
             position: relative;
+            backdrop-filter: blur(10px);
         }
 
         .summary::before {
             content: '>';
-            color: #3a3;
+            color: #ff0080;
             margin-right: 10px;
-            animation: blink 1.5s infinite;
+            animation: blink 1s infinite;
         }
 
         @keyframes blink {
@@ -124,64 +157,56 @@
         }
 
         .category {
-            background: rgba(15, 25, 15, 0.95);
-            border: 1px solid #1a1;
-            padding: 30px;
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 2px solid #00ffff;
+            padding: 35px;
+            margin-bottom: 40px;
             position: relative;
-            box-shadow: 0 0 10px rgba(26, 255, 26, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
         }
 
         .category::after {
             content: '';
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 15px;
-            height: 15px;
-            border-top: 2px solid #2a2;
-            border-right: 2px solid #2a2;
-        }
-
-        .category::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 15px;
-            height: 15px;
-            border-bottom: 2px solid #2a2;
-            border-left: 2px solid #2a2;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ffff00, #ff0080);
+            transform: rotate(45deg);
         }
 
         .category-title {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #2a2;
+            font-size: 2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ffff00;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 3px rgba(26, 255, 26, 0.4);
+            letter-spacing: 3px;
+            color: #ffff00;
+            text-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
             position: relative;
         }
 
         .category-title::before {
-            content: '## ';
-            color: #3a3;
+            content: '/// ';
+            color: #ff0080;
         }
 
         .article-item {
-            padding: 20px 0;
-            border-bottom: 1px dashed rgba(0, 255, 0, 0.3);
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 0, 255, 0.3);
             position: relative;
-            padding-left: 30px;
+            padding-left: 35px;
         }
 
         .article-item::before {
-            content: '▸';
+            content: '►';
             position: absolute;
             left: 0;
-            color: #3a3;
+            color: #00ffff;
+            font-size: 0.8em;
             animation: slideIn 0.5s ease-out;
         }
 
@@ -190,48 +215,47 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .article-item:last-child {
-            border-bottom: none;
-        }
-
         .article-title {
-            font-size: 1.2em;
-            margin-bottom: 10px;
+            font-size: 1.3em;
+            margin-bottom: 15px;
         }
 
         .article-title a {
-            color: #4a4;
+            color: #fff;
             text-decoration: none;
             transition: all 0.3s;
-            text-shadow: 0 0 2px rgba(26, 255, 26, 0.2);
+            background: linear-gradient(90deg, #ff0080, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
         }
 
         .article-title a:hover {
-            color: #6a6;
-            text-shadow: 0 0 5px rgba(26, 255, 26, 0.5);
-            background: rgba(26, 255, 26, 0.05);
-            padding: 2px 5px;
+            filter: brightness(1.3);
+            text-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
         }
 
         .article-meta {
             display: flex;
             gap: 15px;
-            color: #2a2;
-            font-size: 0.85em;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .source {
-            background: rgba(26, 255, 26, 0.05);
-            padding: 2px 8px;
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.2), rgba(0, 255, 255, 0.2));
+            padding: 4px 12px;
             font-size: 0.8em;
-            border: 1px solid #2a2;
+            border: 1px solid #ff0080;
+            color: #ff0080;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .article-summary {
-            color: #3a3;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 0.95em;
-            line-height: 1.7;
+            line-height: 1.8;
         }
 
         .article-summary img {
@@ -240,78 +264,72 @@
 
         .ai-tag {
             display: inline-block;
-            background: #2a2;
-            color: #0a0;
-            padding: 2px 8px;
+            background: linear-gradient(135deg, #ffff00, #ff0080);
+            color: #0a0015;
+            padding: 3px 10px;
             font-size: 0.75em;
             margin-left: 10px;
-            font-weight: bold;
+            font-weight: 700;
             text-transform: uppercase;
-            box-shadow: 0 0 5px rgba(26, 255, 26, 0.3);
+            letter-spacing: 1px;
         }
 
         .footer {
             text-align: center;
-            color: #2a2;
-            padding: 20px;
-            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 30px;
+            margin-top: 50px;
             font-size: 0.9em;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #3a3;
-            text-decoration: none;
-            padding: 10px 20px;
-            border: 1px solid #2a2;
-            transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border: 2px solid;
+            border-image: linear-gradient(135deg, #ff0080, #00ffff) 1;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+            background: rgba(255, 0, 128, 0.1);
+        }
+
         .back-link:hover {
-            background: #2a2;
-            color: #0a0;
-            box-shadow: 0 0 10px rgba(26, 255, 26, 0.3);
+            background: linear-gradient(135deg, #ff0080, #00ffff);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+            transform: translateY(-3px);
         }
 
-        .back-link::before {
-            content: '◀ ';
-        }
-
-        /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #0a0a0a;
+            background: #0a0015;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #2a2;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3a3;
-            box-shadow: 0 0 5px rgba(26, 255, 26, 0.3);
+            background: linear-gradient(180deg, #ff0080, #00ffff);
+            border-radius: 5px;
         }
 
         @media (max-width: 768px) {
             body { padding: 10px; }
-            .header, .category { padding: 20px; }
-            .header h1 { font-size: 1.8em; }
+            .header, .category { padding: 25px; }
+            .header h1 { font-size: 2em; }
             .article-title { font-size: 1.1em; }
         }
     </style>
 </head>
 <body>
-    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
-
     <div class="container">
-        <a href="../index.html" class="back-link">返回矩阵索引</a>
+        <a href="../index.html" class="back-link">返回索引</a>
 
         <div class="header">
             <h1>科技日报</h1>
@@ -333,7 +351,7 @@
                     </a>
                 </div>
                 <div class="article-meta">
-                    <span class="source">[{{ article.source }}]</span>
+                    <span class="source">{{ article.source }}</span>
                 </div>
                 <div class="article-summary">{{ article.summary }}</div>
             </div>
@@ -343,54 +361,9 @@
         {% endfor %}
 
         <div class="footer">
-            <p>>> 数据采集自各科技资讯源 | AI矩阵持续优化中</p>
-            <p>>> SYSTEM STATUS: ONLINE | MATRIX VERSION 2.0</p>
+            <p>/// ACID TECH DAILY SYSTEM ONLINE ///</p>
+            <p>/// DATA COLLECTED FROM VARIOUS SOURCES ///</p>
         </div>
     </div>
-
-    <script>
-        // Matrix rain effect
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?/~`';
-        const charArray = chars.split('');
-
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-
-        const drops = [];
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#2a2';
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = charArray[Math.floor(Math.random() * charArray.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-
-        setInterval(drawMatrix, 35);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-    </script>
 </body>
 </html>
