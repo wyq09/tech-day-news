@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技日报归档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .filter {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: #f0f0f0;
+        }
+
+        .filter button:hover {
+            background: #e0e0e0;
+        }
+
+        .filter button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .archive-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .archive-item {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .archive-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .archive-item .date {
+            color: #999;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .archive-item .summary {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header { padding: 20px; }
+            .archive-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>科技日报归档</h1>
+            <p>每日精选科技资讯，涵盖热点、技术、产品等</p>
+        </div>
+
+        <div class="filter">
+            <button onclick="filterByYear('all')" class="active" id="btn-all">全部</button>
+            {% for year in years %}
+            <button onclick="filterByYear('{{ year }}')" id="btn-{{ year }}">{{ year }}年</button>
+            {% endfor %}
+        </div>
+
+        <div class="archive-list" id="archive-list">
+            {% for item in archive %}
+            <a href="{{ item.path }}" class="archive-item" data-year="{{ item.year }}">
+                <div class="date">{{ item.date }}</div>
+                <div class="summary">{{ item.summary }}</div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if not archive %}
+        <div class="empty">
+            暂无归档内容
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function filterByYear(year) {
+            // 更新按钮状态
+            document.querySelectorAll('.filter button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-' + year).classList.add('active');
+
+            // 过滤列表
+            const items = document.querySelectorAll('.archive-item');
+            items.forEach(item => {
+                if (year === 'all' || item.dataset.year === year) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
