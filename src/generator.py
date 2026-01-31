@@ -52,17 +52,38 @@ class HTMLGenerator:
 
     def clean_images(self, text: str) -> str:
         """清理文本中的所有HTML标签和图片"""
+        import html
         import re
+
+        # 先HTML转义，再移除标签
+        # 这可以确保所有HTML标签都被移除
+        text = html.unescape(text)
+
         # 移除所有HTML标签
         text = re.sub(r'<[^>]+>', '', text, flags=re.IGNORECASE)
+
+        # 移除转义的HTML实体（但保留基本标点）
+        text = re.sub(r'&[a-zA-Z]+;', ' ', text)
+
         # 移除Markdown格式的图片
         text = re.sub(r'!\[.*?\]\(.*?\)', '', text, flags=re.IGNORECASE)
+
         # 移除图片描述
         text = re.sub(r'\[图片\]', '', text)
         text = re.sub(r'图片[:：].*?(?:\n|$)', '', text)
+
+        # 移除特殊符号和多余标点
+        text = re.sub(r'[\*\_]+', '', text)
+
         # 移除多余的空格和换行
         text = re.sub(r'\s+', ' ', text)
-        return text.strip()
+        text = text.strip()
+
+        # 限制长度
+        if len(text) > 300:
+            text = text[:300] + '...'
+
+        return text
 
     def generate_archive(self, archive_data: list) -> str:
         """生成归档页面"""
