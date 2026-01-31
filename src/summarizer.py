@@ -28,7 +28,9 @@ def generate_ai_summary(titles: List[str], date: datetime, total: int) -> str:
     weekday = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"][date.weekday()]
 
     # 统计AI相关
-    ai_count = sum(1 for t in titles if any(kw in t.upper() for kw in ["AI", "GPT", "LLM", "模型", "智能", "人工智能", "深度学习", "机器学习", "OpenAI", "ChatGPT", "Claude"]))
+    ai_keywords = ["AI", "GPT", "LLM", "大模型", "人工智能", "深度学习", "机器学习",
+                  "OpenAI", "ChatGPT", "Claude", "Prompt", "Agent", "RAG", "多模态"]
+    ai_count = sum(1 for t in titles if any(kw in t.upper() for kw in ai_keywords))
 
     # 提取关键词
     from collections import Counter
@@ -40,16 +42,20 @@ def generate_ai_summary(titles: List[str], date: datetime, total: int) -> str:
         words.extend(chinese_words)
 
     counter = Counter(words)
-    top_words = [word for word, count in counter.most_common(8) if word not in ['发布', '推出', '宣布', '报道', '新闻', '更新', '最新']]
+    # 过滤停用词
+    stop_words = {'发布', '推出', '宣布', '报道', '新闻', '更新', '最新', '今日', '官方', '首发'}
+    filtered_words = [(word, count) for word, count in counter.most_common(12)
+                     if word not in stop_words and len(word) >= 2]
 
-    # 生成黑客帝国风格导语
+    # 生成科技风格导语
     summary_parts = []
-    summary_parts.append(f"系统已同步 {date_str} {weekday} 的矩阵数据流。")
-    summary_parts.append(f"今日检测到 {total} 个科技节点更新，其中 {ai_count} 个涉及AI核心矩阵。")
+    summary_parts.append(f"系统同步 {date_str} {weekday} 科技数据流。")
+    summary_parts.append(f"今日捕获 {total} 个科技节点，其中 {ai_count} 个涉及AI核心模型。")
 
-    if top_words:
-        summary_parts.append(f"热点信号注入：{', '.join(top_words[:6])}。")
+    if filtered_words:
+        top_keywords = [word for word, count in filtered_words[:6]]
+        summary_parts.append(f"关键信号检测：{', '.join(top_keywords)}。")
 
-    summary_parts.append("矩阵正在持续优化，建议保持连接稳定。")
+    summary_parts.append("持续监控科技前沿趋势。")
 
     return " ".join(summary_parts)

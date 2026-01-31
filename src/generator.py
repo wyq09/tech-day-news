@@ -51,15 +51,17 @@ class HTMLGenerator:
         return filepath
 
     def clean_images(self, text: str) -> str:
-        """清理文本中的图片标签"""
+        """清理文本中的所有HTML标签和图片"""
         import re
-        # 移除所有HTML图片标签
-        text = re.sub(r'<img[^>]*>', '', text, flags=re.IGNORECASE)
+        # 移除所有HTML标签
+        text = re.sub(r'<[^>]+>', '', text, flags=re.IGNORECASE)
         # 移除Markdown格式的图片
         text = re.sub(r'!\[.*?\]\(.*?\)', '', text, flags=re.IGNORECASE)
         # 移除图片描述
         text = re.sub(r'\[图片\]', '', text)
         text = re.sub(r'图片[:：].*?(?:\n|$)', '', text)
+        # 移除多余的空格和换行
+        text = re.sub(r'\s+', ' ', text)
         return text.strip()
 
     def generate_archive(self, archive_data: list) -> str:
