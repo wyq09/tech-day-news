@@ -66,7 +66,7 @@ JSON 格式示例：
 
         try:
             response = self.client.chat.completions.create(
-                model="glm-4-flash",
+                model="glm-4.7-flash",
                 messages=[
                     {"role": "system", "content": "你是一个科技资讯分类助手，擅长将资讯准确分类。"},
                     {"role": "user", "content": prompt}
@@ -130,7 +130,7 @@ JSON 格式示例：
 
         try:
             response = self.client.chat.completions.create(
-                model="glm-4-flash",
+                model="glm-4.7-flash",
                 messages=[
                     {"role": "system", "content": "你是一个科技媒体编辑，擅长撰写简洁有力的导语。"},
                     {"role": "user", "content": prompt}
